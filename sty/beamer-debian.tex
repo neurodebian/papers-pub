@@ -1,0 +1,47 @@
+\newcommand{\SWIRLBG}{%
+  \usebackgroundtemplate{\includegraphics[width=\paperwidth]{swirl-lightest}}}
+
+\newcommand{\PYMVPABIG}{%
+  \usebackgroundtemplate{\\ \\ \\ \includegraphics[width=\paperwidth]{pymvpa_logo_fromfusionposter_tuned/dim}}}
+
+% for footnote references without marks
+\long\def\refnote#1{\begingroup\def\thefootnote{\fnsymbol{footnote}}
+\footnote[0]{\hspace{-5mm}\footnotesize{#1}}\endgroup}
+
+\graphicspath{
+ {../pics/}
+ {pics/}
+}
+
+% NeuroDebian theme
+\mode<presentation>
+{
+  \usetheme{Boadilla}
+  \usecolortheme{beaver}
+  \useinnertheme{rectangles}
+  \setbeamertemplate{headline}[default]
+  \setbeamertemplate{navigation symbols}{}
+  \definecolor{debian}{RGB}{215,6,83}
+  \definecolor{ndheadline}{RGB}{32,67,92}
+  \definecolor{ndmint}{RGB}{238,255,204}
+  \definecolor{ndblue}{RGB}{235,243,249}
+  \definecolor{nddarkblue}{RGB}{61,123,165}
+  \definecolor{ndpink}{RGB}{243,237,240}
+  \definecolor{ndyellow}{RGB}{250,242,234}
+  \setbeamercolor{alerted text}{fg=debian}
+  \setbeamercolor{structure}{fg=debian}
+  \setbeamercolor{titlelike}{bg=gray!10!white,fg=debian}
+  \setbeamercolor{frametitle}{fg=ndheadline}
+  \setbeamercolor{block title}{fg=white,bg=nddarkblue!60!gray}
+  \setbeamercolor{block body}{bg=ndblue}
+  \setbeamercolor{block title example}{fg=white,bg=green!25!gray}
+  \setbeamercolor{block body example}{bg=ndmint}
+  \setbeamercolor*{palette primary}{bg=black!10!white,fg=black!30!debian}
+  \setbeamercolor*{palette secondary}{fg=white,bg=debian!80!lightgray}
+  \setbeamercolor*{palette tertiary}{bg=gray,fg=white}
+}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
