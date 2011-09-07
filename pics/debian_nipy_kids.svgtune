@@ -1,0 +1,51 @@
+%file debian_nipy_kids.svg
+# %options previews
+
+layers style=opacity:1.0
+%save all
+
+# Veil ALL layers
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Core style=opacity:1.0
+%save core
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Neuro style=opacity:1.0
+%save neuro
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Data style=opacity:1.0
+%save data
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=ML style=opacity:1.0
+%save ml
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Computing style=opacity:1.0
+%save computing
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Visualization style=opacity:1.0
+%save visualization
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Interfaces style=opacity:1.0
+%save interfaces
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=IDE style=opacity:1.0
+%save ide
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Games style=opacity:1.0
+%save games

@@ -1,0 +1,43 @@
+π`s in Debian or Scientific Debian: NumPy, SciPy and beyond
+
+Debian project delivers a complete free and open-source operating
+system suitable for deployment virtually everywhere: from mobile
+phones to high-performance computing centers. Because of the well
+known stability and versatility, Debian has not only became the origin
+for more than a hundred derivative Linux distributions, such as
+Ubuntu: Together with the extensive coverage of scientific packages,
+Debian is considered by many to be the best available scientific
+platform.
+
+Due to the beauty, versatility, and wide adoption of Python, it is not
+surprising that multiple Debian teams and developers focus on
+packaging and maintaining of Python-based software.  As the result,
+with over 140 packages depending on NumPy, over 30 on
+SciPy, and multiple officially simultaneously supported versions of Python,
+Debian becomes "the Python distribution" providing the largest
+capabilities for the numerical computing in Python `out of the box`.
+Such a turnkey solution eliminates majority of the problems often
+encountered by users trying to deploy Python-based analysis workflows
+on their systems.  With clean description of build- and run-time
+dependencies, package build-time testing, and generic QA (e.g. frequent
+rebuilds, transition testing) provided by Debian project, scientific
+software in Debian obtains additional assurance toward robust
+performance after its installation on users' systems.
+
+This talk will cover
+
+* benefits and possible limitations of doing scientific computing
+  using Python "the Debian way"
+* the current status of Python in Debian: 2.x and 3.x series, upcoming
+  transitions, wheezy release goals
+* packaging and maintenance of Python modules in Debian: common
+  practices, existing standards and procedures
+* existing scientific Python applications in Debian: coverage of
+  scientific domains, aspects of integration with other scientific
+  packages
+* reasons and channels to contribute to Debian
+
+This talk should be of interest both for the scientific Python
+developers to gain insights on possible benefits from the integration
+of their software in Debian, and for the Python "users" to realize
+what comes within the Debian box.

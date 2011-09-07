@@ -1,0 +1,22 @@
+# Generate slides from neuropy_history
+%file linuxes-tagcloud-201108.svg
+# %options previews
+
+# Veil ALL layers
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=Debians style=opacity:1.0
+%save 00debians
+layer label=Ubuntus style=opacity:1.0
+%save 00ubudebians
+
+layers style=opacity:0.2
+layer label=bg style=opacity:1.0
+layer label=RedHats style=opacity:1.0
+%save 01redhats
+layer label=Fedoras style=opacity:1.0
+%save 01fedoredhats
+
+layer label=Debians style=opacity:1.0
+layer label=Ubuntus style=opacity:1.0
+%save 02debians+redhats

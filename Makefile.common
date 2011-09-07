@@ -1,0 +1,273 @@
+# -*- Makefile -*-
+# CVS version control block - do not edit manually
+#  $RCSfile: Makefile.common,v $
+#  $Revision: 1.40 $
+#  $Date: 2007-06-06 02:42:43 $
+#  $Source: /home/cvs/papers/Makefile.common,v $
+
+all:: pdf
+
+## Usage Instructions: create "Makefile" containing
+##
+##  - "SRC=foo.tex", to declare your source file(s)
+##
+##  - "include .../Makefile.common" pointing to this file
+##
+##  - optional settings to override defaults,
+##    eg "PAPERSIZE=a4"
+##    or "foo.ps: PAPERSIZE=a0"
+##    or "foo.ps: PAPERFLAGS="
+##
+##  - optional "all::pdf" or "all::ps" to extend target format
+##
+##  - optional "MSRC=foo_abstract.tex" to declare misc source file(s)
+##    which are included in SRC's text, so their derivative files should
+##    also be cleaned
+
+#BIBTEX = bibtex.pybtex
+BIBTEX = bibtex
+BIBDIR = ../bib
+BSTDIR = ../sty
+## avoid noise so errors are visible
+BIBFLAGS += -terse
+## don't break out proceedings
+BIBFLAGS += -min-crossrefs=$(BIBMINXREFS)
+BIBMINXREFS = 5
+#TEXFLAGS += -interaction=batchmode
+TEXFLAGS += -interaction=nonstopmode
+#TEXFLAGS += -file-line-error-style
+XDVI = xdvi
+## allow xdvi to show bitmaps via "convert"
+XDVIFLAGS = -allowshell
+## tex dvi file to postscript
+DVIPS = dvips
+# all kinds of SVG to something conversions
+INKSCAPE = inkscape -z
+SVG2EPSFLAGS = -T
+PAPERSIZE = letter
+PAPERFLAGS = -t$(PAPERSIZE)
+PAGEFLAGS =
+## strip comments from included EPS files
+DVIPSFLAGS += -K
+## specify paper size explicitly
+DVIPSFLAGS += $(PAPERFLAGS)
+## avoid Type 3 fonts if possible
+DVIPSFLAGS += -Ppdf
+## avoid glyph substitution problem
+DVIPSFLAGS += -G0
+## allow dvips to run "convert" subprocess
+DVIPSFLAGS += -R0
+## ... and shut up about it!
+DVIPSFLAGS += -q
+DVIPSFLAGS += $(PAGEFLAGS)
+## distiller or equivalent
+PS2PDF = ps2pdf14
+EPS2PDF = epstopdf
+PDFTEX=TEXINPUTS=.:$(TETEXSRC): pdflatex $(TEXFLAGS) -shell-escape
+#USE_PDFTEX=0				# assign 1 for yes
+## compression
+GZIP = gzip
+GZIPFLAGS = -9 --rsyncable
+## convert file to .djvu format
+ANY2DJVU = any2djvu
+ANY2DJVUFLAGS = -q
+## generate thumbnails
+THUMBPDF = thumbpdf
+## directory containing figures
+FIGDIR=figs
+## miscellaneous trash files which are not subject to "clever" clean up
+MISCTRASH=
+
+## The choice of compiler for .aux
+ifeq (1,$(USE_PDFTEX))
+TEX = $(PDFTEX)
+else
+TEX = latex $(TEXFLAGS)
+endif
+
+
+MAIN=$(SRC:.tex=)
+ps:  $(SRC:.tex=.ps)
+dvi: $(SRC:.tex=.dvi)
+pdf: $(SRC:.tex=.pdf) $(SRC:.rst=.pdf)
+djvu: $(SRC:.tex=.djvu)
+bib: $(SRC:.tex=.bbl)
+thumb: $(SRC:.tex=.tpt)		# THUMBPDF extension
+
+%.eps: %.dvi; $(DVIPS) -E $(DVIPSFLAGS) -o $@ $<
+%.ps:  %.dvi; $(DVIPS) $(DVIPSFLAGS) -o $@ $<
+%.pdf: %.rst; rst2pdf $<
+
+ifeq (1,$(USE_PDFTEX))
+%.pdf %.aux: %.tex $(MSRC)
+	rm -f $*.log
+	@run=0; while ( [ ! -e "$*.log" ] || grep -q "Rerun to get" "$*.log" ) && [ $$run -lt 5 ]; do \
+	     echo "** Re-running pdftex. Run $$run **";    \
+		 $(PDFTEX) $< >/dev/null 2>&1 || cat $*.log; \
+		 run=$$(($$run+1)); \
+    done
+else
+%.aux: %.tex;
+	rm -f $*.log
+	@run=0; while ( [ ! -e "$*.log" ] || grep -q "Rerun to get" "$*.log" ) && [ $$run -lt 5 ]; do \
+	     echo "** Re-running LaTeX. Run $$run **";    \
+		 $(TEX) $< >/dev/null 2>&1 || cat $*.log; \
+		 run=$$(($$run+1)); \
+    done; \
+	grep -q 'There were undefined citations' $*.log && $(MAKE) bib
+%.pdf: %.ps $(MSRC); $(PS2PDF) $< $@
+endif
+
+%.pdf: %.eps; $(EPS2PDF) $<
+%.djvu: %.ps.gz; $(ANY2DJVU) $(ANY2DJVUFLAGS) $< || echo "done"
+%.gz: %; $(GZIP) $(GZIPFLAGS) < $< > $@; touch --reference=$< $@
+%.tpt: %.pdf; $(THUMBPDF) $<
+%.eps:  %.svg; $(INKSCAPE) $(SVG2EPSFLAGS) -f $< -E $@
+%.pdf: %.svg; $(INKSCAPE) -f $< -A $@
+
+%.bbl: %.aux
+	env BIBINPUTS=$(BIBDIR): BSTINPUTS=$(BSTDIR): $(BIBTEX) $(BIBFLAGS) $*
+#   Might lead to circual recursive rebuilds forever
+#	grep -q 'There were undefined citations' $(<:.aux=.log)
+#		&& $(MAKE) -W$(<:.aux=.tex) || true
+
+%.ps: %.draw
+	echo manually drawtool $^ and save as postscript to $@
+	exit 1
+
+%.eps: %.dia; dia -e $@ $<
+
+
+## Create a list of all included graphics files.
+
+figlist: $(SRC:.tex=.dvi)
+	strings $^ \
+	 | egrep 'PSfile=' \
+	 | tr '" ' '\n\n' \
+	 | egrep / \
+	 | sort \
+	 | uniq \
+	> figlist
+
+## Gather all included graphics files into a subdir.
+
+figs:: figlist
+	-rm -rf $(FIGDIR)
+	mkdir $(FIGDIR)
+	tar -chf - --files-from=figlist | tar -C $(FIGDIR) -xf -
+	@$(MAKE) --no-print-directory figs-bb
+
+## generate ASCII text
+
+%.txt: %.ps
+	pstotext -cork $<				\
+	 | tr '\255' '-'				\
+	 | sed 'N; N; N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; N; s/\n\f//Mg'			\
+	 | sed 'N; N; N; N; N; s/\([A-Za-z]\)-\n/\1/Mg'	\
+	 | sed 'N; N; N; s/\([A-Za-z]\)-\n/\1/Mg'	\
+	 | sed 's/\([0-9]\)--/\1-/g'			\
+	 | fmt --split-only --width=79 --crown-margin > $@
+
+%.txt: %.pdf
+	pstotext -cork $<				\
+	 | tr '\255' '-'				\
+	 | sed 'N; N; N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; N; s/\n[0-9]\n\f//Mg'		\
+	 | sed 'N; N; N; s/\n\f//Mg'			\
+	 | sed 'N; N; N; N; N; s/\([A-Za-z]\)-\n/\1/Mg'	\
+	 | sed 'N; N; N; s/\([A-Za-z]\)-\n/\1/Mg'	\
+	 | sed 's/\([0-9]\)--/\1-/g'			\
+	 | fmt --split-only > $@
+
+#%.txt: %.pdf ; pdftotext $<
+
+## Generate bounding box files for images in ./figs subdir.
+
+figs-bb:
+	find $(FIGDIR) -type f -iregex '.*[.]\(jpg\|gif\|png\|tif\)'  -print0 \
+	 | xargs --verbose --null --no-run-if-empty make-bb
+
+## Clean properly, giving concise make directive.
+## Also remove trash generated from $MSRC.
+
+ASRC=$(SRC) $(MSRC) $(SSRC)
+cleanexts=dvi aux bbl blg end ps pdf djvu log idx toc lot lof ttt tpt fff out nav snm vrb cb cb2
+clean::
+	rm -f $(foreach file,$(ASRC:.tex=) $(ASRC:.rst=),$(addprefix $(file)., $(cleanexts))) $(MISCTRASH) *~
+	rm -f comment.cut
+	rm -f $(CODE_TEX) code.sty $(CODE:.py=-snippet*.*)
+
+## View all generated .dvi files sequentially
+
+view:: dvi
+	for f in $(SRC:.tex=.dvi); do \
+	  $(XDVI) $(XDVIFLAGS) $$f; done
+
+## Run latex even when .dvi files are newer than .tex files.
+
+latex:
+	@$(MAKE) --no-print-directory $(addprefix -W, $(SRC)) dvi
+
+## Run bibtex even when .bbl files are newer than .aux files.
+
+bibtex:
+	@$(MAKE) --no-print-directory $(addprefix -W, $(SRC:.tex=.aux)) bib
+
+##  Run latex, then bibtex, then latex twice.  (This is something of a
+##  bad idea because it obscures any bibtex errors.  That can be
+##  disastrous, as latex generates no errors for a bad \nocite so
+##  reading bibtex's output may be the user's only chance to notice a
+##  missing bibliographic reference.)
+
+ybib::
+	@$(MAKE) --no-print-directory latex
+	@$(MAKE) --no-print-directory bibtex
+	@$(MAKE) --no-print-directory latex
+	@$(MAKE) --no-print-directory latex
+
+## Helper if interested in providing proper version tag within the manuscript
+revision.tex: ../misc/revision.tex.in ../.git/index
+	GITID=$$(git log -1 | grep -e '^commit' -e '^Date:' | sed  -e 's/^[^ ]* *//g' | tr '\n' ' '); \
+	echo $$GITID; \
+	sed -e "s/GITID/$$GITID/g" $< >| $@
+
+## Code snippets
+
+CODE_TEX= $(CODE:.py=.py.tex)
+#PYGMENTIZE_FLAGS=-l python -O style=colorful,linenos=1 -f latex
+PYGMENTIZE_FLAGS=-l python -O bg=light,python=cool,style=friendly,linenos=1 -f latex
+%.py.tex: %.py;	pygmentize $(PYGMENTIZE_FLAGS) -o $@ $^
+
+code: $(CODE_TEX) code.sty
+
+# Generate 1 style file to be used for all code inclusions
+code.sty:
+	echo '' \
+	| pygmentize $(PYGMENTIZE_FLAGS) -O full \
+	| sed -n -e '/usepack/,/begin{do/p' \
+	| grep -v 'utf-8' \
+    | head -n -1 >| $@
+
+# Extract snippets for inclusion, and generate .tex versions for them
+snippets-stamp: $(CODE)
+	$(MAKE) snippets
+	touch $@
+
+snippets: $(CODE)
+	for f in $(CODE); do \
+       awk '/^ *#snippet_start/{print $$2;}' $$f \
+       | while read s; do \
+           sf=$${f%%.py}-snippet-$$s.py; \
+           sed -n -e "/^ *#snippet_start $$s/,/^ *#snippet_end $$s/p" $$f \
+           | grep -v '^ *#snip' >| $$sf; \
+        $(MAKE) $$sf.tex; done; done
+
+
+## Latex trivia
+
+.PRECIOUS: %.aux %.dvi
+.PHONY: all dvi clean bib ps pdf figs figs-bb view latex bibtex ybib

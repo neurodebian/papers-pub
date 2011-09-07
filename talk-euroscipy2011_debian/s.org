@@ -1,0 +1,384 @@
+# emacs: -*- mode: org; encoding: utf-8 -*-
+#+LaTeX_CLASS: beamer
+#+TITLE: \pi`s in Debian or Scientific Debian:\newline NumPy, SciPy and beyond
+#+AUTHOR: Yaroslav O. Halchenko
+#+EMAIL: yoh@debian.org
+#+LANGUAGE:  en
+#+LaTeX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \graphicspath{{../pics/}}\hypersetup{colorlinks,urlcolor=blue,linkcolor=black}
+
+#+BEAMER_FRAME_LEVEL: 2
+#+BEAMER_HEADER_EXTRA: \input{../sty/beamer-debian.tex}\institute[Debian/DC]{Debian, Dartmouth College}
+#  ##+COLUMNS: %35ITEM %10BEAMER_env(Env) %10BEAMER_envargs(Args) %4BEAMER_col(Col) %8BEAMER_extra(Ex)
+
+#+BEGIN_LaTeX
+{\SWIRLBG
+\begin{frame}
+  \titlepage
+\end{frame}
+}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+#+END_LaTeX
+
+# Time allowance: 30 min total 2011/08/27 from 16:30 to 17:00
+
+* Debian
+** Debian is ... ultimate OS
+*** Hardware
+**** 9 officially supported hardware architectures
+**** Three kernels (Linux, kFreeBSD, Hurd)
+*** Standards
+**** Social Contract
+**** Debian Free Software Guidelines [Bruce Perens] adopted as "Open Source Definition"
+**** Debian Policy: dynamic bible of Debian
+*** Legally represented
+**** Software in the Public Interest
+*** Software
+**** Vast archive of \approx 33,000 *maintained* packages (\approx 17,000 projects)
+**** Different fields of endeavor:
+***** Debian-Med, Debian-Science, Debichem, NeuroDebian, etc.
+**** 3 1/2 release flavors: stable + two rolling "releases" (+ experimental)
+**** Michael's unstable->stable slide
+**** Linuxes Cloud: 133 Debian derivatives, 43 Red-Hat derivatives among 320
+footnote: With help from http://www.wordle.net
+**** TODO: "Why not Ubuntu?"
+
+TODO: picture on pkgs % flow into Ubuntu
+
+** Debian are ... the community
+*** Debian is not dependent on any company
+*** "Do-ocracy" instead of steering
+
+TODO Debian organization pic from wikipedia
+
+*** Democracy to decide:
+**** Debian project leader (DPL) yearly elections
+**** General resolution (GR) decisions by voting
+*** X developers (from X countries), X maintainers, X contributors, >60 teams
+
+http://wiki.debian.org/Teams
+http://www.debian.org/international/l10n/po/rank
+
+TODO Worldmap
+
+*** Debian picture(s): debconf pics to visualize the Debian community
+XXX to appreciate the "count"
+* Python in Debian
+** Role of Python in Debian:
+*** infrastructural tools: dput, git-buildpackage, piuparts, reportbug, ...
+*** but who cares?
+**** 549 maintainers, 111 teams
+> grep-dctrl -s Maintainer -F Build-Depends python \
+    -o -F Build-Depends python-dev \
+	-o -F Build-Depends python-all \
+	/var/lib/apt/lists/*_sid_main_source_Sources \
+  | sort | uniq -c | sort -n -r | wc -l
+660
+**** 111 Teams
+> ... \
+  | grep -e alioth -e team -e Maintainers -e Debian  \
+  | wc -l \
+111
+> ... \
+  | head \
+    232 Maintainer: Debian Python Modules Team <python-mod...
+     57 Maintainer: Debian Tryton Maintainers <tryton@list...
+     51 Maintainer: Debian OLPC <debian-olpc-devel@lists.a...
+     45 Maintainer: Python Applications Packaging Team <py...
+     40 Maintainer: Debian/Ubuntu Zope Team <pkg-zope-deve...
+     40 Maintainer: Debian Multimedia Maintainers <pkg-mul...
+     26 Maintainer: NeuroDebian Team <team@neuro.debian.ne...
+     26 Maintainer: Debian Science Maintainers <debian-sci...
+     26 Maintainer: Debian QA Group <packages@qa.debian.or...
+     26 Maintainer: Debian Bazaar Maintainers <pkg-bazaar-...
+**** Major teams
+***** Debian Python Modules Team
+
+https://alioth.debian.org/praojects/python-modules
+
+- 207 members
+- Admins
+  - Gustavo Franco
+  - Guilherme de Siqueira Pastore
+  - Piotr Ożarowski
+  - Bernd Zeimetz
+
+***** Debian Applications Packaging Team
+
+https://alioth.debian.org/projects/python-apps
+
+- 133 members
+- Admins
+  - Gustavo Franco
+  - Bernd Zeimetz
+  - Piotr Ożarowski
+  - Scott Kitterman
+
+**** 549 individual maintainers
+> ... \
+  | grep -v -e alioth -e team -e Maintainers -e Debian  \
+  | wc -l \
+549
+> ... \
+  | head \
+     26 Maintainer: Matthias Klose <doko@debian.org>
+     16 Maintainer: David Paleino <dapal@debian.org>
+     14 Maintainer: Arnaud Fontaine <arnau@debian.org>
+     13 Maintainer: Jelmer Vernooij <jelmer@debian.org>
+     12 Maintainer: Pierre Chifflier <pollux@debian.org>
+     12 Maintainer: Josselin Mouette <joss@debian.org>
+     11 Maintainer: Georges Khaznadar <georgesk@ofset.org>
+     11 Maintainer: Chris Lamb <lamby@debian.org>
+     11 Maintainer: Alessio Treglia <alessio@debian.org>
+     10 Maintainer: Scott Kitterman <scott@kitterman.com>
+*** who cares about numpy and scipy
+Debian Python Modules Team maintained
+
+> zgrep -e '^ --' -e '^ *\[' /usr/share/doc/python-numpy/changelog.Debian.gz | sed -e '/ *\[/{N; /--/s,\n, ,g; }' | sed -e 's,]  --.*,],g' | sed -e 's,^ -- *\([^<]*\).*,\1,g' | sed -e 's, *[]\[] *,,g' | sed -e 's/ *$//g' | sort | uniq -c | sort -n -r                                                                                                                                                                                                                  
+     22 Marco Presi (Zufus)
+     20 Ondrej Certik
+     13 Kumar Appaiah
+      9 Sandro Tosi
+      9 Matthias Klose
+      2 Tiziano Zito
+      1 William Grant
+      1 Riku Voipio
+      1 Piotr Ożarowski
+      1 José Fonseca
+      1 Jonas Smedegaard
+      1 Jakub Wilk
+      1 Fabio Tranchitella
+      1 Emilio Pozuelo Monfort
+      1 David Cournapeau
+      1 Cyril Brulebois
+      1 Chris AtLee
+      1 Carlos Galisteo
+      1 Andrew Straw
+      1 amd64 Builddd Daemon (barber)
+
+> zgrep -e '^ --' -e '^ *\[' /usr/share/doc/python-scipy/changelog.Debian.gz | sed -e '/ *\[/{N; /--/s,\n, ,g; }' | sed -e 's,]  --.*,],g' | sed -e 's,^ -- *\([^<]*\).*,\1,g' | sed -e 's, *[]\[] *,,g' | sed -e 's/ *$//g' | sort | uniq -c | sort -n -r     
+     15 Marco Presi (Zufus)
+     13 Ondrej Certik
+      7 José Fonseca
+      7 Alexandre Fayolle
+      5 Luca Falavigna
+      4 Sandro Tosi
+      3 Varun Hiremath
+      3 Piotr Ożarowski
+      2 Matthias Klose
+      2 Debian Python Modules Team
+      1 Stefano Rivera
+      1 Philipp Kern
+      1 Ondřej Čertík
+      1 Julien Lavergne
+      1 Debian/i386 Build Daemon
+      1 David Cournapeau
+      1 Chris AtLee
+      1 amd64 Build Daemon (brahms)
+
+** Current status of Python coverage
+*** Python and \pi`s
+> grep '^Package' /var/lib/apt/lists/*_sid_main_binary-amd64_Packages|sort|uniq|wc -l
+33643
+> grep '^Package' /var/lib/apt/lists/*_sid_main_source_Sources|sort|uniq|wc -l
+16525
+> apt-cache rdepends python|tr '|' ' '|uniq|sed '1,2d'|sort|uniq|wc -l
+2630
+*** TODO Supported versions in 2.x and 3.x series
+**** 2.6 [default] and 2.7
+*** "Supported" is not just the Python -- whole pull of Python packages
+**** 2.7 as the default in experimental
+http://bugs.debian.org/622279
+17 bugs holding the transition
+python 2.7 as the default -- the release goal for wheezy
+**** 3.2 (Python 3.X support is still "in works"):
+> apt-cache rdepends python3|tr '|' ' '|uniq|sed '1,2d'|sort|uniq|wc -l
+65
+python 3.2 -- to be the supported python3 on wheezy
+** Scientific Python coverage
+*** "\pi`s kids in Debian"
+> apt-cache rdepends python-numpy|tr '|' ' '|uniq|sed '1,2d'|sort|uniq|wc -l
+158
+> apt-cache rdepends python-scipy|tr '|' ' '|uniq|sed '1,2d'|sort|uniq|wc -l
+40
+TODO: incremental tagcloud to explore the domains
+** TODO?: Packaging and maintenance of Python modules in Debian
+*** common practices
+*** existing standards and procedures
+* Benefits for you ("Upstream")
+** "Forget" (do not hear from) about the users
+*** Virtually eliminates deployment problems
+**** Deterministic dependencies specification + transitions
+**** Packaged on the system close (identical) to the user's
+**** Deployment issues handled by Debian maintainer
+**** Binary builds across various hardware platforms
+**** "Stable" release is stable -- bugs triaged *before* the release
+*** Wide delivery network
+**** 133 derivatives
+**** Mark S.: 200 millions of users in 3 years, 9 months
+**** Official Debian mirrors in 46 countries
+http://www.debian.org/mirror/list
+** More eyes looking/testing
+*** QA rebuilds, transitions -- handle problems before the user enjoys them
+*** Continuous QA by Debian enthusiasts and Teams (rebuilds, puiparts, etc)
+** Ideal platform for the development
+*** Python Editors/IDEs/refactoring tools
+**** vim, emacs (GNU Python mode, python-mode, ropemacs)
+**** PIDA, Eric, Geany, gEcrit, Spyder (AKA Pydee), etc.
+**** pylint, pyflakes
+**** rope, bicyclerepair
+*** Easy ways to bootstrap a complete system
+**** Why?
+***** previous releases
+***** upcoming releases
+***** clean environment
+***** mimic user's setup
+**** How?
+***** debootstrap + schroot
+> debootstrap sid $PWD
+> sudo cat /etc/schroot/chroot.d/sid-amd64
+[sid-amd64]
+description=Debian sid (forever unstable) amd64 architecture
+type=directory
+location=/scratch/chroots/sid-amd64
+priority=3
+users=yoh
+root-groups=root
+aliases=unstable,sid,default
+> schroot
+***** pbuilder/cowbuilder/qemubuilder -- for packages building
+***** vmdebootstrap
+http://blog.liw.fi/posts/vmdebootstrap/
+> vmdebootstrap squeeze foo.img http://cdn.debian.net/debian
+***** use pre-crafted VM
+http://neuro.debian.net/vm.html
+TODO: VM screenshot
+*** Advanced extensions debugging out-of-the-box
+**** gdb Python awareness
+$> gdb --args /usr/bin/python-dbg segfault.py
+GNU gdb (GDB) 7.3.50.20110627-cvs-debian
+...
+Program received signal SIGSEGV, Segmentation fault.
+...
+(gdb) bt
+...
+    Frame 0xf5c6d0, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 156, in _leading_trailing (a=<numpy.ndarray at remote 0xf2db40>, _nc=<module at remote 0xaa9e30>), throwflag=0) at ../Python/ceval.c:2412
+#11 0x00000000004d10a4 in fast_function (func=<function at remote 0xb28ae0>, pp_stack=0x7fffffffbeb0, n=1, na=1, nk=0) at ../Python/ceval.c:3836
+#12 0x00000000004d0db4 in call_function (pp_stack=0x7fffffffbeb0, oparg=1) at ../Python/ceval.c:3771
+#13 0x00000000004cbccc in PyEval_EvalFrameEx (f=
+    Frame 0xf63230, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 162, in _leading_trailing (a=<numpy.ndarray at remote 0xf2dac0>, _nc=<module at remote 0xaa9e30>, _[1]=[], i=0), throwflag=0) at ../Python/ceval.c:2412
+#14 0x00000000004d10a4 in fast_function (func=<function at remote 0xb28ae0>, pp_stack=0x7fffffffc230, n=1, na=1, nk=0) at ../Python/ceval.c:3836
+...
+(gdb) py
+py-bt      py-down    py-list    py-locals  py-print   py-up      python
+(gdb) py-bt
+#10 Frame 0xf5c6d0, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 156, in _leading_trailing (a=<numpy.ndarray at remote 0xf2db40>, _nc=<module at remote 0xaa9e30>)
+                                     a[-_summaryEdgeItems:]))
+#13 Frame 0xf63230, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 162, in _leading_trailing (a=<numpy.ndarray at remote 0xf2dac0>, _nc=<module at remote 0xaa9e30>, _[1]=[], i=0)
+                min(len(a), _summaryEdgeItems))]
+#16 Frame 0xf5c420, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 189, in _array2string (a=<numpy.ndarray at remote 0xf2dac0>, max_line_width=75, precision=8, suppress_small=False, separator=' ', prefix='', summary_insert='..., ')
+        data = _leading_trailing(a)
+#20 Frame 0xf51430, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 306, in array2string (a=<numpy.ndarray at remote 0xf2dac0>, max_line_width=None, precision=None, suppress_small=None, separator=' ', prefix='', style=<type at remote 0x83dd60>)
+                            separator, prefix)
+#24 Frame 0xf5c940, for file /usr/lib/pymodules/python2.6/numpy/core/numeric.py, line 1424, in array_str (a=<numpy.ndarray at remote 0xf2dac0>, max_line_width=None, precision=None, suppress_small=None)
+    return array2string(a, max_line_width, precision, suppress_small, ' ', "", str)
+#36 Frame 0xed5040, for file segfault.py, line 11, in print_big_array (small_array=<numpy.ndarray at remote 0xf2d9c0>, big_array=<numpy.ndarray at remote 0xf2da40>)
+    print big_array[-10:]
+#39 Frame 0x9bbf00, for file segfault.py, line 18, in <module> ()
+    l.append(print_big_array(a))
+(gdb) py-list
+ 151    def _leading_trailing(a):
+ 152        import numeric as _nc
+ 153        if a.ndim == 1:
+ 154            if len(a) > 2*_summaryEdgeItems:
+ 155                b = _nc.concatenate((a[:_summaryEdgeItems],
+>156                                         a[-_summaryEdgeItems:]))
+ 157            else:
+ 158                b = a
+ 159        else:
+ 160            if len(a) > 2*_summaryEdgeItems:
+ 161                l = [_leading_trailing(a[i]) for i in range(
+(gdb) py-locals
+a = <numpy.ndarray at remote 0xf2db40>
+_nc = <module at remote 0xaa9e30>
+(gdb) py-up
+#13 Frame 0xf63230, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 162, in _leading_trailing (a=<numpy.ndarray at remote 0xf2dac0>, _nc=<module at remote 0xaa9e30>, _[1]=[], i=0)
+                min(len(a), _summaryEdgeItems))]
+(gdb) py-down
+#10 Frame 0xf5c6d0, for file /usr/lib/pymodules/python2.6/numpy/core/arrayprint.py, line 156, in _leading_trailing (a=<numpy.ndarray at remote 0xf2db40>, _nc=<module at remote 0xaa9e30>)
+                                     a[-_summaryEdgeItems:]))
+(gdb) py-print _summaryEdgeItems
+global '_summaryEdgeItems' = 3
+(gdb) py-print a
+local 'a' = <numpy.ndarray at remote 0xf2db40>
+**** valgrind Python awareness
+
+Suppression files:
+ /usr/lib/valgrind/python.supp
+ /usr/lib/valgrind/python3.supp
+
+TODO: Example
+**** profiling GUI: kcachegrind, hotshot + kcachegrind-converters
+https://github.com/PyMVPA/PyMVPA/blob/master/tools/profile
+TODO: nice screenshot
+**** DMTCP -- snapshot lengthy computations to get closer to reversible debugging
+TODO: embed given slides
+**** FReD is coming
+
+http://www.cs.wisc.edu/condor/CondorWeek2011/wednesday_condor.html
+Checkpointing using DMTCP, Condor, Matlab and FReD
+http://www.cs.wisc.edu/condor/CondorWeek2011/presentations/cooperman-dmtcp.pdf
+Gene Cooperman, Kapil Arya, Tyler Denniston, and Ana-Maria Visan
+
+** Popularity contest (http://popcon.debian.org) -- Basic usage tracking
+* Benefits for your users ("Mortals")
+** "Just works"
+** Integrated with the rest of the system (it is not a separate bundle)
+** Unified maintenance and bug reporting
+** FOSS-guaranteed
+** Could be ran virtually anywhere
+** Is (will be) in the cloud
+*** Point to existing AMIs, current discussion(s)
+* Help yourself to help Debian
+http://neuro.debian.net/blog/2011/2011-08-23_getting_stuff_packaged.html
+** Have a deterministic version!
+** Be conscious about *all* licenses!
+** Allow for modularity!
+*** use (documented) "standard" build mechanisms
+*** treat 3rd party as 3rd party
+**** no forks -- forward fixes upstream, request bugfix releases
+**** allow an option to build against system-installed versions
+*** be compatible with recent released versions numpy/scipy's
+** Be prepared for feedback!
+** Provide unit-/doc- tests and examples
+*** easy way to run only lightweight portion (for build-time testing)
+*** conventional means to run the tests
+*** use tempfile.* instead of the work-tree
+*** do not hardcode matplotlib backends (unless required)
+** Pre-release testing of your software on Debian system
+* Ways to contribute
+http://wiki.debian.org/ProjectNews/HowToContribute
+http://raphaelhertzog.com/2011/06/30/how-to-start-contributing-to-debian
+** TODO: standard ways
+*** reportbug
+*** packaging
+**** TODO: Luca's tutorial
+**** Good night reading: Debian Policy
+**** Seek mentor/sponsor-ship: http://mentor.debian.org
+**** Become "Debian Maintainer"
+**** Become "Debian Developer"
+*** Internationalization (i18n)
+* Thank you
+
+
+* Abandoned
+** easy\_install-vs-FHS -- scripts would go into /usr/bin
+** Strong collaboration with Ubuntu:
+*** Canonical employees: Matthias Klose (Python maintainer in Debian), Barry Warsaw

@@ -1,0 +1,68 @@
+# -*- mode: python; coding: iso-8859-1 -*-
+_td = 300
+_tdl = 600
+PageProps = {
+  1: { 'transition': WipeBlobs, 'transtime': _td,  }, # Section beginning
+  2: { 'transition': SlideLeft, 'transtime': _td,  },
+  12: { 'transition': WipeDown, },
+  15: { 'transition': WipeUp, },
+  16: { 'transition': WipeDown, },
+  19: { 'transition': WipeUp, },
+#   6: { 'transition': SlideRight, },
+#   7: { 'transition': SpiralOutIn, },
+  22: { 'transition': SlideLeft, },		# Go to models
+  26: { 'transition': SlideLeft, },		# Go to models
+  31: { 'transition': SlideLeft, },		# Go to models
+  # popcon plots
+  32: { 'transition': WipeDown, },
+  35: { 'transition': WipeUp, },
+
+  # numpy kids tagcloud
+  36: { 'transition': WipeDown, },
+  42: { 'transition': WipeUp, },
+
+  # benefits for upstream
+  43: { 'transition': SlideLeft, },
+  46: { 'transition': SlideLeft, },
+  48: { 'transition': SlideLeft, },
+
+  # Debugging features
+  50: { 'transition': WipeLeft, 'transtime': _tdl },
+  54: { 'transition': WipeLeft, 'transtime': _tdl },
+  57: { 'transition': WipeLeft, 'transtime': _tdl },
+
+  58: { 'transition': SlideLeft, },
+
+  60: { 'transition': SpinOutIn, 'transtime': 1200 },
+  61: { 'transition': PageTurn, },
+
+}
+"""
+  24: { 'transition': SlideRight, },	# Back with GLM
+  26: { 'transtime': 0},					# MVPA -> MVPA Decoder
+  28: { 'transition': WipeBlobs, 'transtime':2000, },		#  Decoder Analysis
+  #31: { 'transition': SlideDown, },	# Software
+  40: { 'transition': SlideLeft, },	    # Back to Beh <- Brain
+  41: { 'transition': PageTurn, 'transtime': _td,  },      # Extracell
+  45: { 'transition': PageTurn, 'transtime': _td,  },      # EEG
+  49: { 'transition': PageTurn, 'transtime': _td,  },      # fMRI
+  54: { 'transition': SlideRight, },	# Return Next Decoding Stage
+  60: { 'transition': SlideRight, },	# Return Next Decoding Stage
+#  30: { 'transition': WipeDown, },		# presenting Decoder
+#  31: { 'transition': WipeBlobs, },		#  Decoder Analysis
+#  33: { 'transition': SlideLeft, },		# Software
+#  36: { 'transition': PageTurn, 'transtime': _td,  },		# Unimodal sections
+#  42: { 'transition': PageTurn, 'transtime': _td,  },		# EEG
+#  47: { 'transition': PageTurn, 'transtime': _td,  },		# fMRI
+  61: { 'transition': WipeCenterIn, },		# Animacy from Hanson
+  62: { 'transition': WipeCenterOut, },	# Back to ours
+#  146: { 'transition': PageTurn, 'transtime': _td,  },	# Multimodal
+  64: { 'transition': PageTurn, 'transtime': _td,  },	# References
+#  60: { 'transition': ZoomOutIn, 'transtime' : 2000 },	# Done!
+}
+"""
+for i in xrange(100):
+    if not i in PageProps:
+        PageProps[i] = {}
+    if not 'transtime' in PageProps[i]:
+        PageProps[i]['transtime'] = _td

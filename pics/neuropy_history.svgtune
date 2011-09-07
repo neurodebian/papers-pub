@@ -1,0 +1,216 @@
+# Generate slides from neuropy_history
+
+%file neuropy_history.svg
+
+# gqview apparently is good enough to show .svg ;)
+# %options previews
+
+# Disable ALL layers
+layers style=display:none
+
+# Store just global veil if it comes to use:
+layer label=Veil style=display:inline
+%save 00veil
+layers style=display:none
+
+# Display base layers
+layer label=Background style=display:inline
+layer label=Timescale style=display:inline
+layer label=Timeplot style=display:inline
+
+# Undisplay all icons
+g id:re=[sp]_.* style=display:none
+%save 00blank
+
+# BOLD fMRI
+g id=p_fMRI_BOLD_1992 style=display:inline;opacity:1.0
+%save 02fMRI
+
+# SPM
+# Dim fMRI
+g id:re=p_fMRI.* style=opacity:0.6
+g id=p_Friston_1990 style=display:inline;opacity:1.0
+%save 04SPM_PET
+
+g id=s_matlab_1984 style=display:inline;opacity:1.0
+g id=s_matlab_spm_1991 style=display:inline;opacity:1.0
+%save 10SPM_software
+
+# fMRI SPM
+g id=p_SPM_fMRI_1994 style=display:inline;opacity:1.0
+g id=s_matlab_spm_1995 style=display:inline;opacity:1.0
+%save 12SPM_fMRI
+
+# Other Generic/SPM software
+# Dim SPMs
+g id:re=[ps]_.* style=opacity:0.6
+g id=s_afni_1994 style=display:inline;opacity:1.0
+g id=s_fsl_2000 style=display:inline;opacity:1.0
+%save 14fMRI_Other_Free
+
+g id=s_freesurfer_1999 style=display:inline;opacity:1.0
+g id=s_caret_2001 style=display:inline;opacity:1.0
+%save 16MRI_Other
+
+# Other Generic/SPM non-free software
+g id=s_brainvoyager_1998 style=display:inline;opacity:1.0
+%save 18fMRI_Other_NonFree
+
+# Interesting case of 'train is gone'
+g id:re=[ps]_.* style=opacity:0.6
+g id=s_lipsia_1996 style=display:inline;opacity:1.0
+g id:re=s_matlab_spm_.* style=display:inline;opacity:1.0
+g id=s_lipsia_1996_jailed style=display:none
+%save 19lipsia_nonfree
+g id=s_lipsia_1996_jailed style=display:inline;opacity:1.0
+%save 19lipsia_nonfree-2
+
+g id=s_lipsia_2008 style=display:inline;opacity:1.0
+%save 20lipsia_free
+
+
+# Early multivar / fMRI papers
+# Dim previous
+g id:re=[ps]_.* style=opacity:0.6
+g id=p_moeller_1991 style=display:inline;opacity:1.0
+g id=p_Friston_1993 style=display:inline;opacity:1.0
+%save 30PCA
+
+# show PLS paper and software
+g id=p_mcintosh_1996 style=display:inline;opacity:1.0
+g id=s_matlab_pls_2003 style=display:inline;opacity:1.0
+g id=s_matlab_fmristat_2001 style=display:inline;opacity:1.0
+%save 32PLS
+
+# XXX explicit IDs since I might add fMRI papers with the same years
+#     later on
+#g id=p_kippenhahn_1992 style=display:inline;opacity:1.0
+#%save PET_papers
+# Dim them
+g id:re=[ps]_.* style=opacity:0.6
+
+g id=p_haxby_2001 style=display:inline;opacity:1.0
+g id=s_afni_1994 style=display:inline;opacity:1.0
+%save 40Haxby_2001
+
+g id:re=p_.* style=opacity:0.6
+g id=p_vapnik_1992 style=display:inline;opacity:1.0
+g id=s_libsvm_2000 style=display:inline;opacity:1.0
+g id=p_coxsavoy_2003 style=display:inline;opacity:1.0
+%save 41CoxSavoy_2003
+
+g id:re=p_.* style=opacity:0.6
+g id=s_matlab_lapack_2002  style=display:inline;opacity:1.0
+g id=s_r_1993 style=display:inline;opacity:1.0
+g id=p_hanson_2004 style=display:inline;opacity:1.0
+%save 42Hanson_2004
+
+g id:re=p_.* style=opacity:0.6
+#g id=s_matlab_1984 style=display:inline;opacity:1.0
+g id=s_matlab_lapack_2002  style=display:inline;opacity:1.0
+g id=s_matlab_spm_1995 style=display:inline;opacity:1.0
+g id=s_libsvm_2000 style=display:inline;opacity:1.0
+g id=p_kamitani_2005 style=display:inline;opacity:1.0
+%save 43Kamitani_2005
+
+g id:re=p_.* style=opacity:0.6
+g id=p_kriegeskorte_2006 style=display:inline;opacity:1.0
+%save 44Kriegeskorte_2006
+
+g id:re=p_.* style=opacity:0.6
+g id=s_svmlight_1999 style=display:inline;opacity:1.0
+g id=p_hanson_2008 style=display:inline;opacity:1.0
+%save 48Hanson_2008
+
+g id:re=p_.* style=opacity:0.6
+g id=s_r_1993 style=display:inline;opacity:1.0
+g id=s_fsl_2000 style=display:inline;opacity:1.0
+g id=p_poldrack_2009 style=display:inline;opacity:1.0
+%save 50Poldrack_2009
+
+g id:re=p_.* style=opacity:0.6
+g id=p_MUY_2008 style=display:inline;opacity:1.0
+%save 52MUY_2008
+
+
+# Lets accent on software
+g id:re=^p_.* style=opacity:0.6
+%save 60MVPA_Software1
+
+# But that is not it:
+g id=s_shogun_1999 style=display:inline;opacity:1.0
+g id=s_python_mdp_2004 style=display:inline;opacity:1.0
+g id=p_smlr_2005 style=display:inline;opacity:1.0
+g id=p_vapnik_1992 style=display:inline;opacity:1.0
+%save 60MVPA_Software2
+
+g id=s_matlab_mvpa_2005 style=display:inline;opacity:1.0
+%save 62MVPA_Matlab
+
+g id=s_matlab_mvpa_2005 style=display:inline;opacity:0.6
+g id:re=s_python_v.* style=display:inline;opacity:1.0
+%save 64Python_core
+
+# "Why not" python
+g id=s_matlab_n0macos_1998 style=display:inline;opacity:1.0
+g id=s_python_spss_2005 style=display:inline;opacity:1.0
+%save 72pymvpa-whynot
+
+g id:re=s_python_numpy_2005 style=display:inline;opacity:1.0
+g id:re=s_python_numeric_1995 style=display:inline;opacity:1.0
+g id:re=s_python_matplotlib_2003 style=display:inline;opacity:1.0
+g id:re=s_python_scipy_2001 style=display:inline;opacity:1.0
+%save 65Python_libraries
+
+g id:re=s_python_pynifti_2005  style=display:inline;opacity:1.0
+%save 66Python_nifti
+
+g id:re=s_python_afni_2006 style=display:inline;opacity:1.0
+g id:re=s_python_nipy.*  style=display:inline;opacity:1.0
+layer id=nipypeconnections style=display:inline
+%save 67Python_nipy
+
+# Connections into PyMVPA
+g id=s_pymvpa_2007 style=display:inline;opacity:1.0
+%save 70pymvpa
+
+
+layer id=PyMVPAConnections style=display:inline
+%save 74pymvpa-connected
+
+g id=s_debian_1993 style=display:inline;opacity:1.0
+g id=s_linux_1991 style=display:inline;opacity:1.0
+%save 80debian
+
+layer id=NDVeil style=display:inline
+g id=s_debian_neurodebian_2007 style=display:inline;opacity:1.0
+%save 81neurodebian
+
+# Display all icons
+# undisplay python icons... doesn't work yet
+#g href:re=.*t_icon_lg_py style=display:none
+g id:re=[sp]_.* style=display:inline;opacity:1.0
+#%save 99full_nopython
+#g href=#t_icon_lg_py style=display:inline
+%save 99full
+
+# Display What is part of neuro.debian
+g id:re=s_debian_neurodebian_2007 style=display:inline;opacity:1.0
+# Dim papers
+g id:re=p_.* style=display:inline;opacity:0.6
+layer id=PyMVPAConnections style=display:none
+layer id=NDVeil style=display:inline
+%save ndworld
+
+# remove papers
+g id:re=^p_.* style=display:none
+# brighten up all software back
+g id:re=s_.* style=display:inline;opacity:1.0
+
+# Put PyMVPA connections
+layer id=PyMVPAConnections style=display:inline;opacity:1.0
+# remove connections from papers
+g id:re=c_p_.* style=display:none
+%save ndworld-nopapers-pymvpaconnected
+
+

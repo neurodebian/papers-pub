@@ -1,0 +1,13 @@
+%file debian_flavors.svg
+
+# Disable ALL layers
+layers style=display:none
+
+layer label=Stable style=display:inline
+%save stable
+
+layer label=AllSuites style=display:inline
+%save allsuites
+
+layer label=Derivatives style=display:inline
+%save derivatives
