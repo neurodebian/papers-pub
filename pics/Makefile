@@ -30,7 +30,7 @@ PICS_CONVERTED=decoding_figure_tuned/GLM.png \
 	  borrowed/wiki/Chrysler_Building_3_sh.png \
 	  borrowed/wiki/Manhattan3_amk_sw.png \
 	  borrowed/wiki/Old_timer_structural_worker_sw.png
-PICS+=$(PICS_CONVERTED)
+#PICS+=$(PICS_CONVERTED)
 SVGIS=$(shell  find . -iname \*.svgtune | sed -e 's/.svgtune/_tuned/g')
 
 FMAKE := $(MAKE) -s -f $(lastword $(MAKEFILE_LIST))
